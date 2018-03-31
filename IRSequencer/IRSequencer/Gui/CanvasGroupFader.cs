@@ -1,7 +1,7 @@
 ﻿/*
 All credit on this one goes to CYBUTEK
 */
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	using System;
 	using System.Collections;

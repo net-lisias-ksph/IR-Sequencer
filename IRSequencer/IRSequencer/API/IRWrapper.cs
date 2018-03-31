@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 
 // TODO: Change this namespace to something specific to your plugin here.
-namespace IRSequencer.API
+namespace IRSequencer_v3.API
 {
 	public class IRWrapper
 	{

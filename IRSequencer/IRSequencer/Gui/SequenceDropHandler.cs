@@ -2,14 +2,14 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	/// <summary>
 	/// Handles the IR logic of group drop
 	/// </summary>
 	public class SequenceDropHandler : MonoBehaviour, IDropHandler
 	{
-		public IRSequencer.Core.SequencerState linkedState;
+		public IRSequencer_v3.Core.SequencerState linkedState;
 
 		public void OnDrop(PointerEventData eventData)
 		{

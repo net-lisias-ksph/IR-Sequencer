@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using IRSequencer.API;
+using IRSequencer_v3.API;
 
-namespace IRSequencer.Core
+namespace IRSequencer_v3.Core
 {
 	public class BasicCommand
 	{

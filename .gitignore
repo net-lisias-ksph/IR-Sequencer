@@ -1,65 +1,13 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-*.dll
-IRSequencer/IRSequencer/bin/Debug/IRSequencer.pdb
-IRSequencer/IRSequencer/obj/Debug/IRSequencer.csproj.FileListAbsolute.txt
-IRSequencer/IRSequencer/obj/Debug/IRSequencer.csprojResolveAssemblyReference.cache
-*.pdb
-
-*.userprefs
-
-*.mdb
-
-IRSequencer/IRSequencer/obj/Debug/IRSequencer.csproj.FilesWrittenAbsolute.txt
-IRSequencer/IRSequencer.v12.suo
-IRSequencer/IRSequencer.v12.suo
+*.vspscc
+*.vssscc
+*.scc
 *.suo
-IRSequencer/IRSequencer.v12.suo
-*.cache
-IRSequencer/IRSequencer/obj/Release/IRSequencer.csproj.FileListAbsolute.txt
-*.suo
+*.user
 
-IRSequencer/IRSequencer/obj/Release/IRSequencer.csproj.FilesWrittenAbsolute.txt
-*.cache
-IRSequencer/.vs/IRSequencer/IRSequencer.scgdat
+build_release_122.bat
+build_release_131.bat
+build_release_141.bat
+/_release/
+
+/IRSequencer/IRSequencer/bin/
+/IRSequencer/IRSequencer/obj/

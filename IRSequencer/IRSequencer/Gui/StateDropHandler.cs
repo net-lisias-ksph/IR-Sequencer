@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	/// <summary>
 	/// Handles the IR logic of group drop

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using System;
 using KSP.UI;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	public class BasicTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{

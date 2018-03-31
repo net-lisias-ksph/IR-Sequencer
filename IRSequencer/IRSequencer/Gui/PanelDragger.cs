@@ -5,7 +5,7 @@ using System.Collections;
 using KSP.UI.Screens;
 using KSP.UI;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 
 	public class PanelDragger : MonoBehaviour, IPointerDownHandler, IDragHandler

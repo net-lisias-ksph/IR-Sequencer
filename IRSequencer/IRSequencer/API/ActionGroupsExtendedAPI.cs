@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace IRSequencer.API
+namespace IRSequencer_v3.API
 {
 	public class ActionGroupsExtendedAPI
 	{

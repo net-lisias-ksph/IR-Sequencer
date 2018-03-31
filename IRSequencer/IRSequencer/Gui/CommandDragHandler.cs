@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	
 	public class CommandDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -15,7 +15,7 @@ namespace IRSequencer.Gui
 		public Transform dropZone;
 		public bool createCopy = false;
 
-		public IRSequencer.Core.BasicCommand linkedCommand;
+		public IRSequencer_v3.Core.BasicCommand linkedCommand;
 
 		protected Vector2 startingPosition;
 		protected int startingSiblingIndex = 0;

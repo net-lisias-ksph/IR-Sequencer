@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 	{

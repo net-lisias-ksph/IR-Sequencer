@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IRSequencer
+namespace IRSequencer_v3
 {
 	public static class Logger
 	{

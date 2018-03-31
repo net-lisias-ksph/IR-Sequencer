@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using IRSequencer.API;
-using IRSequencer.Utility;
-using IRSequencer.Core;
-using IRSequencer.Module;
+using IRSequencer_v3.API;
+using IRSequencer_v3.Utility;
+using IRSequencer_v3.Core;
+using IRSequencer_v3.Module;
 using KSP.UI.Screens;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using KSP.UI;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	[KSPAddon(KSPAddon.Startup.Flight, false)]
 	public class SequencerFlight : SequencerGUI
@@ -82,7 +82,7 @@ namespace IRSequencer.Gui
 			get { return SequencerInstance; }
 		}
 
-		internal List<ModuleSequencer> sequencers;
+		internal List<ModuleSequencer_v3> sequencers;
 
 		internal Sequence openSequence;
 		internal int selectedGroupIndex = 0;
@@ -112,29 +112,112 @@ namespace IRSequencer.Gui
 
 		private void AddAppLauncherButton()
 		{
-			if(appLauncherButton == null && ApplicationLauncher.Ready && ApplicationLauncher.Instance != null)
+			if((appLauncherButton != null) || !ApplicationLauncher.Ready || (ApplicationLauncher.Instance == null))
+				return;
+
+			try
 			{
-				try
-				{
-					var texture = UIAssetsLoader.iconAssets.Find(t => t.name == "icon_seq_button");
+				Texture2D texture = UIAssetsLoader.iconAssets.Find(i => i.name == "icon_seq_button");
 
-					if(ApplicationLauncher.Instance == null)
-					{
-						Logger.Log(string.Format("[GUI AddAppLauncher.Instance is null, PANIC!"), Logger.Level.Fatal);
-						return;
-					}
-					appLauncherButton = ApplicationLauncher.Instance.AddModApplication(ShowControlWindow,
-						CloseAllWindows, null, null, null, null,
-						ApplicationLauncher.AppScenes.FLIGHT, texture);
+				appLauncherButton = ApplicationLauncher.Instance.AddModApplication(
+					ShowIRSeqWindow,
+					HideIRSeqWindow,
+					null, null, null, null,
+					ApplicationLauncher.AppScenes.NEVER,
+					texture);
 
-				}
-				catch (Exception ex)
+				ApplicationLauncher.Instance.AddOnHideCallback(OnHideCallback);
+			}
+			catch (Exception ex)
+			{
+				Logger.Log(string.Format("[GUI AddAppLauncherButton Exception, {0}", ex.Message), Logger.Level.Fatal);
+			}
+		}
+
+		private void OnHideCallback()
+		{
+			try
+			{
+				appLauncherButton.SetFalse(false);
+			}
+			catch(Exception)
+			{}
+
+			HideIRSeqWindow();
+		}
+
+		void OnGameSceneLoadRequestedForAppLauncher(GameScenes SceneToLoad)
+		{
+			DestroyAppLauncherButton();
+		}
+
+		private void DestroyAppLauncherButton()
+		{
+			try
+			{
+				if(appLauncherButton != null && ApplicationLauncher.Instance != null)
 				{
-					Logger.Log(string.Format("[GUI AddAppLauncherButton Exception, {0}", ex.Message), Logger.Level.Fatal);
-					DestroyAppLauncherButton();
+					ApplicationLauncher.Instance.RemoveModApplication(appLauncherButton);
 					appLauncherButton = null;
 				}
+
+				if(ApplicationLauncher.Instance != null)
+					ApplicationLauncher.Instance.RemoveOnHideCallback(OnHideCallback);
 			}
+			catch(Exception e)
+			{
+				Logger.Log("[GUI] Failed unregistering AppLauncher handlers," + e.Message);
+			}
+		}
+
+		private void OnDestroy()
+		{
+			if(_controlWindow)
+			{
+				_controlWindow.DestroyGameObjectImmediate();
+				_controlWindow = null;
+				_controlWindowFader = null;
+			}
+
+			if(_editorWindow)
+			{
+				_editorWindow.DestroyGameObjectImmediate();
+				_editorWindow = null;
+				_editorWindowFader = null;
+			}
+
+			if(_settingsWindow)
+			{
+				_settingsWindow.DestroyGameObjectImmediate();
+				_settingsWindow = null;
+			}
+
+			_stateUIControls = null;
+			_sequenceUIControls = null;
+			openSequence = null;
+			_openSequenceCommandControls = null;
+
+			EditorLocker.EditorLock(false);
+
+			GameEvents.onShowUI.Remove(OnShowUI);
+			GameEvents.onHideUI.Remove(OnHideUI);
+
+			GameEvents.onVesselChange.Remove(OnVesselChange);
+			GameEvents.onVesselWasModified.Remove(OnVesselWasModified);
+			GameEvents.onEditorShipModified.Remove(OnEditorShipModified);
+			GameEvents.onEditorRestart.Remove(OnEditorRestart);
+
+			SequencerGUI.Instance.isReady = false;
+			SaveConfigXml();
+
+			GameEvents.onGUIApplicationLauncherReady.Remove(AddAppLauncherButton);
+
+			GameEvents.onGameSceneLoadRequested.Remove(OnGameSceneLoadRequestedForAppLauncher);
+			DestroyAppLauncherButton();
+
+			//consider unloading textures too in TextureLoader
+
+			Logger.Log("[Sequencer] Destroy successful", Logger.Level.Debug);
 		}
 
 		public void CheckForServoSelection()
@@ -196,13 +279,13 @@ namespace IRSequencer.Gui
 				return Vector3.zero;
 		}
 
-		public static List<ModuleSequencer> FindSequencer(List<Part> parts)
+		public static List<ModuleSequencer_v3> FindSequencer(List<Part> parts)
 		{
-			List<ModuleSequencer> aSequencer = new List<ModuleSequencer>();
+			List<ModuleSequencer_v3> aSequencer = new List<ModuleSequencer_v3>();
 
 			for(int i = 0; i < parts.Count; i++)
 			{
-				ModuleSequencer sequencer = parts[i].GetComponent<ModuleSequencer>();
+				ModuleSequencer_v3 sequencer = parts[i].GetComponent<ModuleSequencer_v3>();
 				if(sequencer)
 					aSequencer.Add(sequencer);
 			}
@@ -239,6 +322,7 @@ namespace IRSequencer.Gui
 				if(appLauncherButton != null)
 				{
 					appLauncherButton.VisibleInScenes = ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB;
+// FEHLER, Sequencer suchen bei OnVesselChange oder so und dann sich das merken und hier doch sicher nicht den Knopf anzeigen, wenn der Scheiss am Ende doch nicht nutzbar ist... echt jetzt -> das aber zusammen mit IR entwickeln, weil dort ist es auch noch ein elendes Chaos
 				}
 
 				if(HighLogic.LoadedSceneIsFlight)
@@ -252,7 +336,7 @@ namespace IRSequencer.Gui
 					{
 						ScreenMessages.PostScreenMessage("Sequencer module is required (add probe core).", 3, ScreenMessageStyle.UPPER_CENTER);
 						GUIEnabled = false;
-						CloseAllWindows();
+						HideIRSeqWindow();
 						return;
 					}
 				}
@@ -269,7 +353,7 @@ namespace IRSequencer.Gui
 							{
 								ScreenMessages.PostScreenMessage("Sequencer module is required (add probe core).", 3, ScreenMessageStyle.UPPER_CENTER);
 								GUIEnabled = false;
-								CloseAllWindows();
+								HideIRSeqWindow();
 								return;
 							}
 						}
@@ -485,7 +569,7 @@ namespace IRSequencer.Gui
 			}
 		}
 
-		public void ShowControlWindow()
+		public void ShowIRSeqWindow()
 		{
 			RebuildUI();
 
@@ -512,11 +596,11 @@ namespace IRSequencer.Gui
 
 			sequencers.Clear();
 			openSequence = null;
-			CloseAllWindows();
+			HideIRSeqWindow();
 			guiRebuildPending = true;
 			
 			//find module SequencerStorage and force loading of sequences
-			var modules = v.FindPartModulesImplementing<ModuleSequencer>();
+			var modules = v.FindPartModulesImplementing<ModuleSequencer_v3>();
 			if(modules == null)
 			{
 				Logger.Log("Could not find any ModuleSequencer module", Logger.Level.Debug);
@@ -565,11 +649,11 @@ namespace IRSequencer.Gui
 			sequencers.Clear();
 			guiRebuildPending = true;
 
-			var sequencerParts = ship.Parts.FindAll(p => p.FindModuleImplementing<ModuleSequencer>() != null);
+			var sequencerParts = ship.Parts.FindAll(p => p.FindModuleImplementing<ModuleSequencer_v3>() != null);
 
 			for(int i = 0; i < sequencerParts.Count; i++)
 			{
-				var seqModule = sequencerParts[i].FindModuleImplementing<ModuleSequencer>();
+				var seqModule = sequencerParts[i].FindModuleImplementing<ModuleSequencer_v3>();
 				sequencers.Add(seqModule);
 				seqModule.loadPending = true;
 			}
@@ -587,7 +671,7 @@ namespace IRSequencer.Gui
 			SequencerInstance = this;
 			isReady = true;
 
-			sequencers = new List<ModuleSequencer>();
+			sequencers = new List<ModuleSequencer_v3>();
 			sequencers.Clear();
 
 			GameEvents.onVesselChange.Add(OnVesselChange);
@@ -603,14 +687,9 @@ namespace IRSequencer.Gui
 		private void OnEditorRestart()
 		{
 			GUIEnabled = false;
-			CloseAllWindows();
+			HideIRSeqWindow();
 			openSequence = null;
 			sequencers.Clear();
-		}
-
-		void OnGameSceneLoadRequestedForAppLauncher(GameScenes SceneToLoad)
-		{
-			DestroyAppLauncherButton();
 		}
 
 		public void Start()
@@ -636,66 +715,6 @@ namespace IRSequencer.Gui
 		{
 			guiHidden = true;
 		}
-
-		private void DestroyAppLauncherButton()
-		{
-			if(appLauncherButton != null && ApplicationLauncher.Instance != null)
-			{
-				ApplicationLauncher.Instance.RemoveModApplication(appLauncherButton);
-				appLauncherButton = null;
-			}
-		}
-
-		private void OnDestroy()
-		{
-			if(_controlWindow)
-			{
-				_controlWindow.DestroyGameObjectImmediate();
-				_controlWindow = null;
-				_controlWindowFader = null;
-			}
-
-			if(_editorWindow)
-			{
-				_editorWindow.DestroyGameObjectImmediate();
-				_editorWindow = null;
-				_editorWindowFader = null;
-			}
-
-			if(_settingsWindow)
-			{
-				_settingsWindow.DestroyGameObjectImmediate();
-				_settingsWindow = null;
-			}
-
-			_stateUIControls = null;
-			_sequenceUIControls = null;
-			openSequence = null;
-			_openSequenceCommandControls = null;
-
-			EditorLocker.EditorLock(false);
-
-			GameEvents.onShowUI.Remove(OnShowUI);
-			GameEvents.onHideUI.Remove(OnHideUI);
-
-			GameEvents.onVesselChange.Remove(OnVesselChange);
-			GameEvents.onVesselWasModified.Remove(OnVesselWasModified);
-			GameEvents.onEditorShipModified.Remove(OnEditorShipModified);
-			GameEvents.onEditorRestart.Remove(OnEditorRestart);
-
-			SequencerGUI.Instance.isReady = false;
-			SaveConfigXml();
-
-			GameEvents.onGUIApplicationLauncherReady.Remove(AddAppLauncherButton);
-
-			GameEvents.onGameSceneLoadRequested.Remove(OnGameSceneLoadRequestedForAppLauncher);
-			DestroyAppLauncherButton();
-
-			//consider unloading textures too in TextureLoader
-
-			Logger.Log("[Sequencer] Destroy successful", Logger.Level.Debug);
-		}
-
 
 		private void InitSettingsWindow()
 		{
@@ -906,13 +925,13 @@ namespace IRSequencer.Gui
 			var closeButton = _controlWindow.GetChild("WindowTitle").GetChild("RightWindowButton");
 			if(closeButton != null)
 			{
-				closeButton.GetComponent<Button>().onClick.AddListener(CloseAllWindows);
+				closeButton.GetComponent<Button>().onClick.AddListener(HideIRSeqWindow);
 				var t = closeButton.AddComponent<BasicTooltip>();
 				t.tooltipText = "Close window";
 			}
 		}
 
-		private void InitSequencerLinePrefab(GameObject sequencerLinePrefab, ModuleSequencer module)
+		private void InitSequencerLinePrefab(GameObject sequencerLinePrefab, ModuleSequencer_v3 module)
 		{
 			var sequencerControls = sequencerLinePrefab.GetChild("SequencerControlsHLG");
 
@@ -962,7 +981,7 @@ namespace IRSequencer.Gui
 			}
 		}
 
-		private void InitSequencerStatePrefab(GameObject stateLinePrefab, SequencerState state, ModuleSequencer module)
+		private void InitSequencerStatePrefab(GameObject stateLinePrefab, SequencerState state, ModuleSequencer_v3 module)
 		{
 			var stateControls = stateLinePrefab.GetChild("SequencerStateControlsHLG");
 
@@ -1033,7 +1052,7 @@ namespace IRSequencer.Gui
 			}
 		}
 
-		private void InitSequenceLinePrefab(GameObject sequenceLinePrefab, Sequence s, ModuleSequencer module)
+		private void InitSequenceLinePrefab(GameObject sequenceLinePrefab, Sequence s, ModuleSequencer_v3 module)
 		{
 			var sequenceStatusHandle = sequenceLinePrefab.GetChild("SequenceStatusRawImage").GetComponent<RawImage>();
 			sequenceStatusHandle.gameObject.AddComponent<BasicTooltip>().tooltipText = "Grab to reorder or re-assign.";
@@ -1934,7 +1953,7 @@ namespace IRSequencer.Gui
 
 		}
 
-		private void CloseAllWindows()
+		private void HideIRSeqWindow()
 		{
 			CloseEditorWindow();
 

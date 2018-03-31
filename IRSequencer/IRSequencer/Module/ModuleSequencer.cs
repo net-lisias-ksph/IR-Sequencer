@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using IRSequencer.API;
-using IRSequencer.Gui;
-using IRSequencer.Core;
+using IRSequencer_v3.API;
+using IRSequencer_v3.Gui;
+using IRSequencer_v3.Core;
 
-namespace IRSequencer.Module
+namespace IRSequencer_v3.Module
 {
 
 	/// <summary>
@@ -14,7 +14,7 @@ namespace IRSequencer.Module
 	/// Also handles saving/loading of its own sequences and states (deprecates SequencerStorage)
 	/// All the non-GUI Sequencer code should be moved here as well.
 	/// </summary>
-	public class ModuleSequencer : PartModule
+	public class ModuleSequencer_v3 : PartModule
 	{
 		[KSPField(isPersistant = true, guiActive = false, guiActiveEditor = false, guiName = "serializedSequences")]
 		public string serializedSequences = "";

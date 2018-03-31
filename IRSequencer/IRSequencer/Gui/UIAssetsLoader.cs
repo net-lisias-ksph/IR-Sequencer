@@ -6,12 +6,13 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	[KSPAddon(KSPAddon.Startup.MainMenu, false)]
 	public class UIAssetsLoader : MonoBehaviour
 	{
 		private AssetBundle IRAssetBundle;
+		private AssetBundle IRSeqAssetBundle;
 
 		internal static GameObject controlWindowPrefab;
 		internal static GameObject sequencerLinePrefab;
@@ -30,9 +31,23 @@ namespace IRSequencer.Gui
 		
 		public static bool allPrefabsReady = false;
 
+		public IEnumerator LoadBundle(string location)
+		{
+			while(!Caching.ready)
+				yield return null;
+
+			using (WWW www = WWW.LoadFromCacheOrDownload(location, 1))
+			{
+				yield return www;
+				IRSeqAssetBundle = www.assetBundle;
+
+				LoadBundleAssets();
+			}
+		}
+
 		private void LoadBundleAssets()
 		{
-			var prefabs = IRAssetBundle.LoadAllAssets<GameObject>();
+			var prefabs = IRSeqAssetBundle.LoadAllAssets<GameObject>();
 			int prefabsLoadedCount = 0;
 			for(int i = 0; i < prefabs.Length; i++)
 			{
@@ -41,6 +56,7 @@ namespace IRSequencer.Gui
 					controlWindowPrefab = prefabs[i] as GameObject;
 					prefabsLoadedCount++;
 				}
+
 				if(prefabs[i].name == "SequencerLinePrefab")
 				{
 					sequencerLinePrefab = prefabs[i] as GameObject;
@@ -85,7 +101,32 @@ namespace IRSequencer.Gui
 			}
 
 			allPrefabsReady = (prefabsLoadedCount > 7);
-			/*
+
+			spriteAssets = new List<UnityEngine.Sprite>();
+			var sprites = IRSeqAssetBundle.LoadAllAssets<UnityEngine.Sprite>();
+
+			for(int i = 0; i < sprites.Length; i++)
+			{
+				if(sprites[i] != null)
+				{
+					spriteAssets.Add(sprites[i]);
+					Logger.Log("Successfully loaded Sprite " + sprites[i].name, Logger.Level.Debug);
+				}
+			}
+
+			iconAssets = new List<Texture2D>();
+			var icons = IRSeqAssetBundle.LoadAllAssets<Texture2D>();
+
+			for(int i = 0; i < icons.Length; i++)
+			{
+				if(icons[i] != null)
+				{
+					iconAssets.Add(icons[i]);
+					Logger.Log("Successfully loaded texture " + icons[i].name, Logger.Level.Debug);
+				}
+			}
+
+/*	das hier wär wieder aus IR statt die eigenen... nun... eben...
 			spriteAssets = new List<UnityEngine.Sprite>();
 			var sprites = IRAssetBundle.LoadAllAssets<UnityEngine.Sprite>();
 
@@ -111,14 +152,18 @@ namespace IRSequencer.Gui
 			if(allPrefabsReady)
 				Logger.Log("Successfully loaded all prefabs from AssetBundle");
 			else
-				Logger.Log("Some prefabs failed to load, bundle = " + IRAssetBundle.name);
+				Logger.Log("Some prefabs failed to load, bundle = " + IRSeqAssetBundle.name);
 		}
 
 		public void Start()
 		{
 			if(allPrefabsReady)
 				return; //there is no need to reload the prefabs or any other assets.
-			
+
+bool bLoadGeklaute = false; // die vom IR... wieso lade ich das Zeug nicht aus den eigenen Assets? was soll das? ist das so viel? wegen den paar KB?
+		if(bLoadGeklaute)
+		{
+
 			//need to clean cache
 			Caching.CleanCache();
 			
@@ -133,10 +178,9 @@ namespace IRSequencer.Gui
 			if(!allPrefabsReady)
 			{
 				if(IRAssetBundle != null)
-				{
 					LoadBundleAssets();
-				}
 			}
+// FEHLER, kommt später, wenn ich meine eigene Sache geladen habe...
 
 			fieldInfo = IRAssetsLoaderType.GetField("iconAssets", BindingFlags.NonPublic | BindingFlags.Static);
 			iconAssets = (List<Texture2D>)fieldInfo.GetValue(null);
@@ -144,12 +188,28 @@ namespace IRSequencer.Gui
 			fieldInfo = IRAssetsLoaderType.GetField("spriteAssets", BindingFlags.NonPublic | BindingFlags.Static);
 			spriteAssets = (List<Sprite>)fieldInfo.GetValue(null);
 
+//meine assets noch laden, nicht nur die geklauten... Himmel Arsch und Zwirn
+
+		}
+	
+
+			var assemblyFile = Assembly.GetExecutingAssembly().Location;
+			var bundlePath = "file://" + assemblyFile.Replace(new FileInfo(assemblyFile).Name, "").Replace("\\","/") + "../AssetBundles/";
+
+			Logger.Log("Loading bundles from BundlePath: " + bundlePath, Logger.Level.Debug);
+
+			Caching.CleanCache();
+
+			StartCoroutine(LoadBundle(bundlePath + "ir_seq_ui_objects_v3.ksp"));
 		}
 
 		public void Update()
 		{
 			if(!allPrefabsReady)
 			{
+bool bLoadGeklaute = false; // die vom IR... wieso lade ich das Zeug nicht aus den eigenen Assets? was soll das? ist das so viel? wegen den paar KB?
+		if(bLoadGeklaute)
+		{
 				Type IRAssetsLoaderType = null;
 
 				AssemblyLoader.loadedAssemblies.TypeOperation(t => {
@@ -166,6 +226,10 @@ namespace IRSequencer.Gui
 
 				fieldInfo = IRAssetsLoaderType.GetField("spriteAssets", BindingFlags.NonPublic | BindingFlags.Static);
 				spriteAssets = (List<Sprite>)fieldInfo.GetValue(null);
+		}
+
+// FEHLER, wozu Update?
+
 			}
 		}
 

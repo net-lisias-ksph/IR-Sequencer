@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	
 	public class StateDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -16,7 +16,7 @@ namespace IRSequencer.Gui
 		public Transform dropZone;
 		public bool createCopy = false;
 
-		public IRSequencer.Core.SequencerState linkedState;
+		public IRSequencer_v3.Core.SequencerState linkedState;
 
 		protected Vector2 startingPosition;
 		protected Image draggedItemBG;

@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace IRSequencer.Utility
+namespace IRSequencer_v3.Utility
 {
 	public class TextureLoader
 	{

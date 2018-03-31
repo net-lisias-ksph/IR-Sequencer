@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	public class UIAnimationHelper : MonoBehaviour
 	{

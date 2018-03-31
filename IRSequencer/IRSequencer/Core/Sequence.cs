@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IRSequencer.Core
+namespace IRSequencer_v3.Core
 {
 	/// <summary>
 	/// Implements a Sequence of BasicCommands. 

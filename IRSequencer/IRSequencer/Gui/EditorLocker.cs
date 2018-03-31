@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using IRSequencer;
-using IRSequencer.API;
+using IRSequencer_v3;
+using IRSequencer_v3.API;
 using System;
 
 
-namespace IRSequencer.Gui
+namespace IRSequencer_v3.Gui
 {
 	public class EditorLocker : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
