@@ -4,6 +4,8 @@
 *.suo
 *.user
 
+/IRSequencer/*.sln
+
 /_release/
 
 /IRSequencer/IRSequencer/bin/
