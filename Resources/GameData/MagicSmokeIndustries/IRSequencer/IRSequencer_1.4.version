@@ -1,7 +1,7 @@
 {
   "NAME"     : "Infernal Robotics Sequencer",
   "DOWNLOAD" : "https://github.com/meirumeiru/IR-Sequencer/releases",
-  "URL"      : "https://github.com/meirumeiru/IR-Sequencer",
+  "URL"      : "https://raw.githubusercontent.com/meirumeiru/IR-Sequencer/master/Resources/GameData/MagicSmokeIndustries/IRSequencer/IRSequencer_1.4.version",
   "GITHUB" : {
       "USERNAME"   : "meirumeiru",
       "REPOSITORY" : "IR-Sequencer"

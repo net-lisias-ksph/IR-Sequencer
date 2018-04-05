@@ -12,7 +12,7 @@ xcopy "Resources\GameData\MagicSmokeIndustries\IRSequencer\Plugins" "_release\Ga
 copy "Resources\GameData\MagicSmokeIndustries\IRSequencer\LICENSE.md" "_release\GameData131\GameData\MagicSmokeIndustries\IRSequencer\LICENSE.md"
 copy "Resources\GameData\MagicSmokeIndustries\IRSequencer\MM_IRSequencer_v3.cfg" "_release\GameData131\GameData\MagicSmokeIndustries\IRSequencer\MM_IRSequencer_v3.cfg"
 
-copy "Resources\GameData\MagicSmokeIndustries\IRSequencer\IRSequencer_1.3.1.version" "_release\GameData131\GameData\MagicSmokeIndustries\IRSequencer\InfernalRobotics.version"
+copy "Resources\GameData\MagicSmokeIndustries\IRSequencer\IRSequencer_1.3.version" "_release\GameData131\GameData\MagicSmokeIndustries\IRSequencer\InfernalRobotics.version"
 
 copy "IRSequencer\IRSequencer\bin\Release 1.3.1\IRSequencer_v3.dll" "_release\GameData131\GameData\MagicSmokeIndustries\IRSequencer\Plugins\IRSequencer_v3.dll"
 
