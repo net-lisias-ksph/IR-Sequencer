@@ -16,4 +16,5 @@ copy "Resources\GameData\MagicSmokeIndustries\IRSequencer\IRSequencer_1.4.versio
 
 copy "IRSequencer\IRSequencer\bin\Release 1.4.2\IRSequencer_v3.dll" "_release\GameData142\GameData\MagicSmokeIndustries\IRSequencer\Plugins\IRSequencer_v3.dll"
 
+del "_release\IR-Sequencer_v3.0.0_for_1.4.2.zip"
 C:\PACL\PACOMP.EXE -a -r -p "_release\IR-Sequencer_v3.0.0_for_1.4.2.zip" "_release\GameData142\*"
