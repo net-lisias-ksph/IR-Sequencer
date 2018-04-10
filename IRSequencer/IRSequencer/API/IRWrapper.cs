@@ -43,7 +43,7 @@ namespace IRSequencer_v3.API
 
 			IRMotorType = null;
 			AssemblyLoader.loadedAssemblies.TypeOperation (t => {
-				if(t.FullName == "InfernalRobotics_v3.Control.IMotor") { IRMotorType = t; } });
+				if(t.FullName == "InfernalRobotics_v3.Interfaces.IMotor") { IRMotorType = t; } });
 
 			if(IRMotorType == null)
 			{
@@ -53,7 +53,7 @@ namespace IRSequencer_v3.API
 
 			IRServoType = null;
 			AssemblyLoader.loadedAssemblies.TypeOperation (t => {
-				if(t.FullName == "InfernalRobotics_v3.Control.IServo") { IRServoType = t; } });
+				if(t.FullName == "InfernalRobotics_v3.Interfaces.IServo") { IRServoType = t; } });
 
 			if(IRServoType == null)
 			{
