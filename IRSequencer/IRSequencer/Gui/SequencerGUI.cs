@@ -1314,9 +1314,9 @@ namespace IRSequencer_v3.Gui
 					}
 				});
 
-			var servoGroupsFiltered = new List<IRWrapper.IControlGroup>();
+			var servoGroupsFiltered = new List<IRWrapper.IServoGroup>();
 
-			foreach(IRWrapper.IControlGroup g in IRWrapper.IRController.ServoGroups)
+			foreach(IRWrapper.IServoGroup g in IRWrapper.IRController.ServoGroups)
 			{
 				if(HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel != g.Vessel)
 					continue;
@@ -1324,7 +1324,7 @@ namespace IRSequencer_v3.Gui
 			}
 
 			var servoGroupsDropdownList = new List<Dropdown.OptionData>();
-			foreach(IRWrapper.IControlGroup g in servoGroupsFiltered)
+			foreach(IRWrapper.IServoGroup g in servoGroupsFiltered)
 			{
 				servoGroupsDropdownList.Add(new Dropdown.OptionData(g.Name));
 			}
@@ -1732,7 +1732,7 @@ namespace IRSequencer_v3.Gui
 			{
 				var allServos = new List<IRWrapper.IServo>();
 				var servosDropdownList = new List<Dropdown.OptionData>();
-				foreach(IRWrapper.IControlGroup g in IRWrapper.IRController.ServoGroups)
+				foreach(IRWrapper.IServoGroup g in IRWrapper.IRController.ServoGroups)
 				{
 					if(HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel != g.Vessel)
 						continue;

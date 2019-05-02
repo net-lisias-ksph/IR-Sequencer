@@ -219,7 +219,7 @@ namespace IRSequencer_v3.Module
 
 			var allServos = new List<IRWrapper.IServo>();
 
-			foreach(IRWrapper.IControlGroup g in IRWrapper.IRController.ServoGroups)
+			foreach(IRWrapper.IServoGroup g in IRWrapper.IRController.ServoGroups)
 			{
 				allServos.AddRange(g.Servos);
 			}
