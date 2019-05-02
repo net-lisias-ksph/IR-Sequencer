@@ -12,7 +12,9 @@ namespace IRSequencer_v3.API
 		private static bool isWrapped;
 
 		protected internal static Type IRControllerType { get; set; }
-		protected internal static Type IRControlGroupType { get; set; }
+
+		protected internal static Type IRServoGroupType { get; set; }
+		protected internal static Type IRMotorGroupType { get; set; }
 
 		protected internal static Type IRServoType { get; set; }
 		protected internal static Type IRMotorType { get; set; }
@@ -24,12 +26,12 @@ namespace IRSequencer_v3.API
 		internal static bool InstanceExists { get { return (IRController != null); } }
 		internal static bool APIReady { get { return isWrapped && IRController.Ready; } }
 
-		internal static bool InitWrapper ()
+		internal static bool InitWrapper()
 		{
 			isWrapped = false;
 			ActualController = null;
 			IRController = null;
-			LogFormatted ("Attempting to Grab IR Types...");
+			LogFormatted("Attempting to Grab IR Types...");
 
 			IRControllerType = null;
 
@@ -39,7 +41,7 @@ namespace IRSequencer_v3.API
 			if(IRControllerType == null)
 				return false;
 
-			LogFormatted ("IR Version:{0}", IRControllerType.Assembly.GetName ().Version.ToString ());
+			LogFormatted("IR Version:{0}", IRControllerType.Assembly.GetName().Version.ToString());
 
 			IRMotorType = null;
 			AssemblyLoader.loadedAssemblies.TypeOperation (t => {
@@ -47,7 +49,7 @@ namespace IRSequencer_v3.API
 
 			if(IRMotorType == null)
 			{
-				LogFormatted ("[IR Wrapper] Failed to grab Motor Type");
+				LogFormatted("[IR Wrapper] Failed to grab Motor Type");
 				return false;
 			}
 
@@ -57,44 +59,54 @@ namespace IRSequencer_v3.API
 
 			if(IRServoType == null)
 			{
-				LogFormatted ("[IR Wrapper] Failed to grab Servo Type");
+				LogFormatted("[IR Wrapper] Failed to grab Servo Type");
 				return false;
 			}
 
-			IRControlGroupType = null;
+			IRMotorGroupType = null;
 			AssemblyLoader.loadedAssemblies.TypeOperation (t => {
-				if(t.FullName == "InfernalRobotics_v3.Command.ControlGroup") { IRControlGroupType = t; } });
+				if(t.FullName == "InfernalRobotics_v3.Command.IMotorGroup") { IRMotorGroupType = t; } });
 
-			if(IRControlGroupType == null)
+			if(IRMotorGroupType == null)
 			{
-				LogFormatted ("[IR Wrapper] Failed to grab ControlGroup Type");
+				LogFormatted("[IR Wrapper] Failed to grab MotorGroup Type");
 				return false;
 			}
 
-			LogFormatted ("Got Assembly Types, grabbing Instance");
+			IRServoGroupType = null;
+			AssemblyLoader.loadedAssemblies.TypeOperation (t => {
+				if(t.FullName == "InfernalRobotics_v3.Command.IServoGroup") { IRServoGroupType = t; } });
+
+			if(IRServoGroupType == null)
+			{
+				LogFormatted("[IR Wrapper] Failed to grab ServoGroup Type");
+				return false;
+			}
+
+			LogFormatted("Got Assembly Types, grabbing Instance");
 
 			try
 			{
-				var propertyInfo = IRControllerType.GetProperty ("Instance", BindingFlags.Public | BindingFlags.Static);
+				var propertyInfo = IRControllerType.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static);
 
 				if(propertyInfo == null)
-					LogFormatted ("[IR Wrapper] Cannot find Instance Property");
+					LogFormatted("[IR Wrapper] Cannot find Instance Property");
 				else
 					ActualController = propertyInfo.GetValue(null, null);
 			}
 			catch (Exception e)
 			{
-				LogFormatted ("No Instance found, " + e.Message);
+				LogFormatted("No Instance found, " + e.Message);
 			}
 
 			if(ActualController == null)
 			{
-				LogFormatted ("Failed grabbing Instance");
+				LogFormatted("Failed grabbing Instance");
 				return false;
 			}
 
-			LogFormatted ("Got Instance, Creating Wrapper Objects");
-			IRController = new InfernalRoboticsAPI ();
+			LogFormatted("Got Instance, Creating Wrapper Objects");
+			IRController = new InfernalRoboticsAPI();
 			isWrapped = true;
 			return true;
 		}
@@ -106,28 +118,28 @@ namespace IRSequencer_v3.API
 			private PropertyInfo apiReady;
 			private object actualServoGroups;
 
-			public InfernalRoboticsAPI ()
+			public InfernalRoboticsAPI()
 			{
-				DetermineReady ();
-				BuildServoGroups ();
+				DetermineReady();
+				BuildServoGroups();
 			}
 
-			private void BuildServoGroups ()
+			private void BuildServoGroups()
 			{
-				var servoGroupsField = IRControllerType.GetField ("ServoGroups");
+				var servoGroupsField = IRControllerType.GetField("ServoGroups");
 				if(servoGroupsField == null)
-					LogFormatted ("Failed Getting ServoGroups fieldinfo");
+					LogFormatted("Failed Getting ServoGroups fieldinfo");
 				else if(IRWrapper.ActualController == null)
-					LogFormatted ("ServoController Instance not found");
+					LogFormatted("ServoController Instance not found");
 				else
 					actualServoGroups = servoGroupsField.GetValue(IRWrapper.ActualController);
 			}
 
-			private void DetermineReady ()
+			private void DetermineReady()
 			{
-				LogFormatted ("Getting APIReady Object");
-				apiReady = IRControllerType.GetProperty ("APIReady", BindingFlags.Public | BindingFlags.Static);
-				LogFormatted ("Success: " + (apiReady != null));
+				LogFormatted("Getting APIReady Object");
+				apiReady = IRControllerType.GetProperty("APIReady", BindingFlags.Public | BindingFlags.Static);
+				LogFormatted("Success: " + (apiReady != null));
 			}
 
 			public bool Ready
@@ -145,14 +157,14 @@ namespace IRSequencer_v3.API
 			{
 				get
 				{
-					BuildServoGroups ();
+					BuildServoGroups();
 					return ExtractServoGroups (actualServoGroups);
 				}
 			}
 
 			private IList<IServoGroup> ExtractServoGroups (object servoGroups)
 			{
-				var listToReturn = new List<IServoGroup> ();
+				var listToReturn = new List<IServoGroup>();
 
 				if(servoGroups == null)
 					return listToReturn;
@@ -165,7 +177,7 @@ namespace IRSequencer_v3.API
 				}
 				catch (Exception ex)
 				{
-					LogFormatted ("Cannot list ServoGroups: {0}", ex.Message);
+					LogFormatted("Cannot list ServoGroups: {0}", ex.Message);
 				}
 
 				return listToReturn;
@@ -194,31 +206,31 @@ namespace IRSequencer_v3.API
 			public IRServoGroup (object cg)
 			{
 				actualControlGroup = cg;
-				FindProperties ();
-				FindMethods ();
+				FindProperties();
+				FindMethods();
 			}
 
-			private void FindProperties ()
+			private void FindProperties()
 			{
-				nameProperty = IRControlGroupType.GetProperty ("Name");
-				vesselProperty = IRControlGroupType.GetProperty ("Vessel");
-				forwardKeyProperty = IRControlGroupType.GetProperty ("ForwardKey");
-				reverseKeyProperty = IRControlGroupType.GetProperty ("ReverseKey");
-				groupSpeedFactorProperty = IRControlGroupType.GetProperty ("GroupSpeedFactor");
-				expandedProperty = IRControlGroupType.GetProperty ("Expanded");
+				nameProperty = IRServoGroupType.GetProperty("Name");
+				vesselProperty = IRServoGroupType.GetProperty("Vessel");
+				forwardKeyProperty = IRServoGroupType.GetProperty("ForwardKey");
+				reverseKeyProperty = IRServoGroupType.GetProperty("ReverseKey");
+				groupSpeedFactorProperty = IRServoGroupType.GetProperty("GroupSpeedFactor");
+				expandedProperty = IRServoGroupType.GetProperty("Expanded");
 
-				var servosProperty = IRControlGroupType.GetProperty ("Servos");
+				var servosProperty = IRServoGroupType.GetProperty("Servos");
 				ActualServos = servosProperty.GetValue(actualControlGroup, null);
 			}
 
 			private void FindMethods()
 			{
-				moveRightMethod = IRControlGroupType.GetMethod ("MoveRight", BindingFlags.Public | BindingFlags.Instance);
-				moveLeftMethod = IRControlGroupType.GetMethod ("MoveLeft", BindingFlags.Public | BindingFlags.Instance);
-				moveCenterMethod = IRControlGroupType.GetMethod ("MoveCenter", BindingFlags.Public | BindingFlags.Instance);
-				moveNextPresetMethod = IRControlGroupType.GetMethod ("MoveNextPreset", BindingFlags.Public | BindingFlags.Instance);
-				movePrevPresetMethod = IRControlGroupType.GetMethod ("MovePrevPreset", BindingFlags.Public | BindingFlags.Instance);
-				stopMethod = IRControlGroupType.GetMethod ("Stop", BindingFlags.Public | BindingFlags.Instance);
+				moveRightMethod = IRServoGroupType.GetMethod ("MoveRight", BindingFlags.Public | BindingFlags.Instance);
+				moveLeftMethod = IRServoGroupType.GetMethod ("MoveLeft", BindingFlags.Public | BindingFlags.Instance);
+				moveCenterMethod = IRServoGroupType.GetMethod ("MoveCenter", BindingFlags.Public | BindingFlags.Instance);
+				moveNextPresetMethod = IRServoGroupType.GetMethod ("MoveNextPreset", BindingFlags.Public | BindingFlags.Instance);
+				movePrevPresetMethod = IRServoGroupType.GetMethod ("MovePrevPreset", BindingFlags.Public | BindingFlags.Instance);
+				stopMethod = IRServoGroupType.GetMethod ("Stop", BindingFlags.Public | BindingFlags.Instance);
 			}
 
 			public string Name
@@ -295,7 +307,7 @@ namespace IRSequencer_v3.API
 
 			private IList<IServo> ExtractServos (object actualServos)
 			{
-				var listToReturn = new List<IServo> ();
+				var listToReturn = new List<IServo>();
 
 				if(actualServos == null)
 					return listToReturn;
@@ -305,7 +317,7 @@ namespace IRSequencer_v3.API
 					foreach(var item in (IList)actualServos)
 						listToReturn.Add(new IRServo (item));
 				} catch (Exception ex) {
-					LogFormatted ("Error extracting from actualServos: {0}", ex.Message);
+					LogFormatted("Error extracting from actualServos: {0}", ex.Message);
 				}
 				return listToReturn;
 			}
@@ -396,7 +408,7 @@ namespace IRSequencer_v3.API
 				reverseKeyProperty = IRServoType.GetProperty("ReverseKey");
 			}
 
-			private void FindMethods ()
+			private void FindMethods()
 			{
 				moveLeftMethod = IRMotorType.GetMethod("MoveLeft", BindingFlags.Public | BindingFlags.Instance);
 				moveCenterMethod = IRMotorType.GetMethod("MoveCenter", BindingFlags.Public | BindingFlags.Instance);
@@ -621,14 +633,14 @@ namespace IRSequencer_v3.API
 
 			IList<IServo> Servos { get; }
 
-			void MoveLeft ();
-			void MoveCenter ();
-			void MoveRight ();
+			void MoveLeft();
+			void MoveCenter();
+			void MoveRight();
 
-			void MoveNextPreset ();
-			void MovePrevPreset ();
+			void MoveNextPreset();
+			void MovePrevPreset();
 
-			void Stop ();
+			void Stop();
 
 			string ForwardKey { get; set; }
 			string ReverseKey { get; set; }
@@ -671,23 +683,23 @@ namespace IRSequencer_v3.API
 
 			float Position { get; }
 
-			void MoveLeft ();
-			void MoveCenter ();
-			void MoveRight ();
+			void MoveLeft();
+			void MoveCenter();
+			void MoveRight();
 
-			void MoveNextPreset ();
-			void MovePrevPreset ();
+			void MoveNextPreset();
+			void MovePrevPreset();
 
 			void MoveTo (float position, float speed);
 
-			void Stop ();
+			void Stop();
 
 			string ForwardKey { get; set; }
 			string ReverseKey { get; set; }
 
 			bool Equals (object o);
 
-			int GetHashCode ();
+			int GetHashCode();
 		}
 
 		#endregion API Contract
@@ -702,7 +714,7 @@ namespace IRSequencer_v3.API
 		[System.Diagnostics.Conditional ("DEBUG")]
 		internal static void LogFormatted_DebugOnly (string message, params object [] strParams)
 		{
-			LogFormatted (message, strParams);
+			LogFormatted(message, strParams);
 		}
 
 		/// <summary>
@@ -710,10 +722,10 @@ namespace IRSequencer_v3.API
 		/// </summary>
 		/// <param name="message">Text to be printed - can be formatted as per string.format</param>
 		/// <param name="strParams">Objects to feed into a string.format</param>
-		internal static void LogFormatted (string message, params object [] strParams)
+		internal static void LogFormatted(string message, params object [] strParams)
 		{
-			var assemblyName = Assembly.GetExecutingAssembly ().GetName ().Name;
-			var declaringType = MethodBase.GetCurrentMethod ().DeclaringType;
+			var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+			var declaringType = MethodBase.GetCurrentMethod().DeclaringType;
 			message = string.Format (message, strParams);
 
 			string strMessageLine = declaringType != null ?
