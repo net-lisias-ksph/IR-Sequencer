@@ -1,5 +1,19 @@
 # IR Sequencer :: Change Log
 
+* 2016-0421: 1.0-beta2 (Ziw) for KSP 1.0.4 PRE-RELEASE
+	+ Requires IR 2.0-RC1 or later
+	+ Requires clean install (delete any previous version from GameData/MagicSmokeIndustries/IRSequencer)
+	+ New features:
+		- State machine functionality (can be optional, just having 1 state will replicate previous version behaviour)
+		- New awesome UI
+			- To select servo for Move command just Ctrl-Click it on your craft while Edit Sequence window is open
+			- You can drag and drop States, Sequences between States (this will change Sequence's starting State) and Commands in Edit Sequence window.
+			- Goto command now places an indicator where it points to, but please avoid using more than one GoTO command per sequence for now.
+			- Cool looking progress indicators for commands in Edit Sequence window
+		- You can have multiple Sequencers per craft and let them control different servos. Each Sequencer has it's own set of States.
+	+ Known issues:
+		- AGX support is temporarily disabled (will be re-enables on release, given that AGX will be updated).
+		- Multiple IR capable crafts in physics range was not tested properly, please report any issues.
 * 2016-0303: 1.0-beta1.2 (Ziw) for KSP 1.0.4 PRE-RELEASE
 	+ Fix the Revert to Hangar not saving the sequences
 	+ Fix the keyboard shortcuts not working for multiple sequences in different states.
