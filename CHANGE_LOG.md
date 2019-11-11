@@ -1,5 +1,7 @@
 # IR Sequencer :: Change Log
 
+* 2016-0425: 1.0-beta4 (Ziw) for KSP 1.0.4 PRE-RELEASE
+	+ No changelog provided
 * 2016-0422: 1.0-beta3 (Ziw) for KSP 1.0.4 PRE-RELEASE
 	+ Also added option to settings to always start control window in edit mode
 * 2016-0421: 1.0-beta2 (Ziw) for KSP 1.0.4 PRE-RELEASE
