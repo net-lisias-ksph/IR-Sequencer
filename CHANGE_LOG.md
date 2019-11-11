@@ -1,5 +1,14 @@
 # IR Sequencer :: Change Log
 
+* 2015-0623: 0.4 (Ziw) for KSP 1.0.4
+	+ Requires IR version 0.21.3 and higher
+		- Works in KSP 1.0.4
+			- Major: You can now create and edit sequences in editor (VAB, SPH). But there are several limitations:
+			- It is best to leave it as a last part of your craft building as adding or removing parts may create problems and reset your sequences.
+			- You still need the probe core to create/edit/save sequences
+			- For obvious reasons testing sequences in editor is not very accurate as all the robotic parts move to the designated positions instantly and Action Groups do not fire as well.
+			- Experimental: Added the "Wait for ActionGroup" command, but please remember that it checks only if AG is enabled, not the toggle. So for example if you have "Wait for AG Lights" in your sequence then the sequencer will wait until the lights are on, BUT if they are already on it will not pause, so design your sequences accordingly (good practice would be to add "Wait for commands" after your "Wait for ActionGroup" to ensure that all previous servo commands have finished).
+			- Minor: a number of bug fixes and QoL improvements in UI.
 * 2015-0602: 0.4-pre (Ziw) for KSP 1.0.2 + new feature. PRE-RELEASE
 	+ Requires 0.21.3-pre version of IR or better.
 * 2015-0507: 0.3 (Ziw) for KSP 1.0.2 + new feature.
