@@ -1,5 +1,8 @@
 # IR Sequencer :: Change Log
 
+* 2016-0303: 1.0-beta1.2 (Ziw) for KSP 1.0.4 PRE-RELEASE
+	+ Fix the Revert to Hangar not saving the sequences
+	+ Fix the keyboard shortcuts not working for multiple sequences in different states.
 * 2016-0302: 1.0-beta1.1 (Ziw) for KSP 1.0.4 PRE-RELEASE
 	+ Save-Breaking update - your existing crafts will lose all sequences on them, you will have to rebuild them
 	+ This update brings implementation of Finite State Machine to Sequencer.
