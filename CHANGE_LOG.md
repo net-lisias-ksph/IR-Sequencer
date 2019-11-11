@@ -1,5 +1,7 @@
 # IR Sequencer :: Change Log
 
+* 2015-1111: 0.5 (Ziw) for KSP 1.0.4
+	+ Mostly maintenance release, just one experimental feature added - you can now add keyboard shortcuts to sequences.
 * 2015-0623: 0.4 (Ziw) for KSP 1.0.4
 	+ Requires IR version 0.21.3 and higher
 		- Works in KSP 1.0.4
