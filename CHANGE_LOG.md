@@ -1,5 +1,7 @@
 # IR Sequencer :: Change Log
 
+* 2015-0602: 0.4-pre (Ziw) for KSP 1.0.2 + new feature. PRE-RELEASE
+	+ Requires 0.21.3-pre version of IR or better.
 * 2015-0507: 0.3 (Ziw) for KSP 1.0.2 + new feature.
 	+ Changelog
 		- Some minor launcher button code refactoring
