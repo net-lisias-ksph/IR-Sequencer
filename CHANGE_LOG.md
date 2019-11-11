@@ -1,5 +1,9 @@
 # IR Sequencer :: Change Log
 
+* 2015-1229: 0.6 (Ziw) for KSP 1.0.4
+	+ Changes:
+		- Some Commands (servo movement, delay, go to line) are now editable. Unfortunately UI restrictions interfere with making ActionGroups commands to be editable as well.
+		- Added Action Groups Extended support, _version 1.34d or later is required_. Your custom ActionGroups should appear in the list after the stock ActionGroups and behave identically. This feature is still experimental, so please report any bugs you encounter on the forum thread.
 * 2015-1111: 0.5 (Ziw) for KSP 1.0.4
 	+ Mostly maintenance release, just one experimental feature added - you can now add keyboard shortcuts to sequences.
 * 2015-0623: 0.4 (Ziw) for KSP 1.0.4
