@@ -1,5 +1,12 @@
 # IR Sequencer :: Change Log
 
+* 2016-0302: 1.0-beta1.1 (Ziw) for KSP 1.0.4 PRE-RELEASE
+	+ Save-Breaking update - your existing crafts will lose all sequences on them, you will have to rebuild them
+	+ This update brings implementation of Finite State Machine to Sequencer.
+	+ Sequencer will allow you to create Finite State Machines, with all Sequences having a Start State and End State (could be the same state). If a sequence that changes the current state of the machine finishes successfully, then state is changed to the sequence's End State and if there are any sequences, that are set to auto-trigger on machine entering their Start State - they will be started.
+		- You can now have more than 1 sequencer per vessel, so you can have a sequencer for Legs separate from sequencer for Arms for example. It is achieved by moving all sequencer logic to PartModule and is for now attached to probe-cores. This sequencer stores its States and corresponding Sequences and manages their proper execution.
+		- For each sequencer module only one state-changing sequence can be executed at any given time, although if you have non-statechanging sequences, any number of them can be ran simultaneously as long your sequencer's current state matches their start state and they don't lock each other's servos
+		- Although you can have multiple sequencers, keyboard shortcuts are shared between them, so you can use one shortcut key to start/stop multiple sequences across multiple sequencers, but only sequences with proper Start State will be started, depending on the current state of each of the sequencers on your vessel.
 * 2015-1229: 0.6 (Ziw) for KSP 1.0.4
 	+ Changes:
 		- Some Commands (servo movement, delay, go to line) are now editable. Unfortunately UI restrictions interfere with making ActionGroups commands to be editable as well.
