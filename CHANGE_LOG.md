@@ -1,5 +1,7 @@
 # IR Sequencer :: Change Log
 
+* 2018-0331: 3.0.0-alpha1 (Rudolf Meier) for KSP 1.2.2 PRE-RELEASE
+	+ No changelog provided
 * 2017-0605: 1.0.3 (Ziw) for KSP 1.1.3 PRE-RELEASE
 	+ No changelog provided
 * 2016-1030: 1.0.2 (Ziw) for KSP 1.1.3 PRE-RELEASE
