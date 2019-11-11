@@ -1,5 +1,7 @@
 # IR Sequencer :: Change Log
 
+* 2016-1019: 1.0.1 (Ziw) for KSP 1.1.3 PRE-RELEASE
+	+ Recompile + some bugs fixed.
 * 2016-0709: 1.0.0 (Ziw) for KSP 1.1.3
 	+ Maintenance update, recompile for KSP 1.1.3 and IR 2.0.5
 * 2016-0504: 1.0-rc1 (Ziw) for KSP 1.1.2 PRE-RELEASE
